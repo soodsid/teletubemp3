@@ -3,19 +3,19 @@ import time
 import subprocess
 import telepot
 import os
-import urllib2
+import urllib.request
 import re
 import json
 import requests
 from bs4 import BeautifulSoup
-from urllib2 import urlopen
+from urllib.request import urlopen
 import youtube_dl
 
 def handle(msg):
         chat_id = msg['chat']['id']
         command = msg['text']
 
-        print "Command from client : %s " %command
+        print ("Command from client : %s " %command)
 
     #youtube search
         if command.startswith('yt'):
@@ -29,8 +29,8 @@ def handle(msg):
             watchid = vid['href']
             watchid = watchid.replace('/watch?v=','')
             title = vid['title']
-            print title
-            print link
+            print (title)
+            print (link)
             bot.sendMessage(chat_id,title+"\n"+link)
 
             options = {
@@ -56,19 +56,18 @@ def handle(msg):
             with youtube_dl.YoutubeDL(options) as ydl:
                 ydl.download([link])
                 bot.sendAudio(chat_id,audio=open(filename,'rb'))
-                print "Sent!"
+                print ("Sent!")
             os.remove(filename)
     #end youtube search
 
 
 
 #api credentials
-api = open('api.txt','r')
-api_cont = api.read().strip()
+api_cont = os.getenv("apikey")
 bot = telepot.Bot(api_cont)
 bot.message_loop(handle)
-print '[+] Server is Listenining [+]'
-print '[=] Type Command from Telegram [=]'
+print ('[+] Server is Listenining [+]')
+print ('[=] Type Command from Telegram [=]')
 
 while 1:
         time.sleep(10)
